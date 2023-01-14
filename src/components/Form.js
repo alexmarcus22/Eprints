@@ -1,57 +1,46 @@
-import { Card, CardContent, Typography, } from "@mui/material"
-import { Formik, Form, Field, useFormik } from 'formik';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
+import { Button, Card, CardContent, Typography } from "@mui/material"
+import { Formik, Form, Field, FieldArray } from 'formik';
 import { object, mixed, string } from 'yup';
-
+import TextareaAutosize from '@mui/base/TextareaAutosize';
+import TextField from '@mui/material/TextField';
+import SelectComp from "./Select";
+import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
 
 const validationSchema = object({
-  select: string().ensure().required("Select is required!")
-})
+  select: string().ensure().required("Select is required!"),
+  title: string().ensure().required("Title is required!")
+});
+
+const options = [
+  { value: "article", label: "Article" },
+  { value: "client", label: "Client" },
+  { value: "monograf", label: "Monograf" },
+];
 
 const FormComponent = () => {
-  const formik = useFormik({
-    initialValues: {
-      select: ''
-    },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      console.log(JSON.stringify(values));
-    }
-  });
-
   return (
-    <Card>
+    <Card sx={{ minWidth: 500, minHeight: 500 }}>
       <CardContent>
-        <form onSubmit={formik.handleSubmit}>
-          <FormControl fullWidth>
-            <InputLabel id="select-label" name="select">Select</InputLabel>
-            <Select
-              labelId="select-label"
-              id="select"
-              value={formik.values.select}
-              label="Type"
-              onChange={formik.handleChange}
-              name="select"
-              error={Boolean(formik.errors.select)}
-              helpertext={formik.errors.select}
-            >
-              <MenuItem value={'article'}>Article</MenuItem>
-              <MenuItem value={'client'}>Client</MenuItem>
-              <MenuItem value={'monograf'}>Monograf</MenuItem>
-            </Select>
-          </FormControl>
-          <button
-            type="submit"
-            className="btn btn-primary btn-block"
-          >
-            Submit
-          </button>
-        </form>
+        <Formik
+          initialValues={{
+            select: 'article'
+          }}
+          enableReinitialize={true}
+          onSubmit={values => {
+            setTimeout(() => {
+              console.log(JSON.stringify(values, null, 2));
+            }, 100)
+          }}
+        >
+          <Form style={{ 'display': 'flex', 'flexDirection': 'column', alignItems: 'start' }}>
+            <SelectComp options={options} name="select" label="select" id="Type" />
+            <Field name="title" label="title" id="title" component={TextField} />
+            <Button type="submit" variant='secondary'>Submit</Button>
+          </Form>
+        </Formik>
       </CardContent>
-    </Card>
+    </Card >
   )
 }
 
