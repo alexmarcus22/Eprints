@@ -1,7 +1,6 @@
 import Select from "react-select";
 import React from 'react';
 import { useField } from 'formik';
-import FormControl from '@mui/material/FormControl';
 
 const SelectComp = ({
   label,
@@ -13,10 +12,9 @@ const SelectComp = ({
   const { touched, error, value } = meta;
   const { setValue } = helpers;
 
-  console.log(field.name);
-
   return (
     <div>
+      <label htmlFor={props.id || props.name}>{label}</label>
       <Select
         options={options}
         name={field.name}
