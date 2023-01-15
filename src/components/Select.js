@@ -9,11 +9,10 @@ const SelectComp = ({
 }) => {
 
   const [field, meta, helpers] = useField(props);
-  const { touched, error, value } = meta;
   const { setValue } = helpers;
 
   return (
-    <div>
+    <>
       <label htmlFor={props.id || props.name}>{label}</label>
       <Select
         options={options}
@@ -22,7 +21,7 @@ const SelectComp = ({
         instanceId={props.id}
         menuPosition="fixed"
       />
-    </div>
+    </>
   )
 }
 

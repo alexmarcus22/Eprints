@@ -2,6 +2,8 @@ import './App.css';
 import Form from './components/Form';
 import { Container } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import { FormStepper } from './components/FormStepper';
+
 
 function App() {
   return (
