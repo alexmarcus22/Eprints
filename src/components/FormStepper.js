@@ -29,11 +29,9 @@ export const FormStepper = ({ children }) => {
         }}>
           Next
         </Button>) : (
-          <Button variant="contained" type="submit">
-            Submit
-          </Button>
+          null
         )}
       </Stack>
-    </Form >
+    </Form>
   );
 };

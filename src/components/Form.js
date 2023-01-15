@@ -1,12 +1,11 @@
-import { Button, Card, CardContent, Typography } from "@mui/material"
-import { Formik, Form, Field, FieldArray } from 'formik';
-import { object, mixed, string } from 'yup';
+import { Button, Card, CardContent, Typography, Stack, Step, StepLabel, Stepper } from "@mui/material"
+import { Field, FieldArray, Formik, Form } from 'formik';
 import Textarea from "./Textarea";
-import SelectComp from './Select';
-import Input from './Input';
-import FileUpload from "./File";
 import { FormStepper } from "./FormStepper";
 import Grid from '@mui/material/Grid';
+import { array, object, string, mixed } from "yup";
+import Upload from "./Forms/Upload";
+import { useState } from "react"
 
 const options = [
   { value: "article", label: "Article" },
@@ -14,7 +13,47 @@ const options = [
   { value: "monograf", label: "Monograf" },
 ];
 
+const steps = ["Type", "Details", "Upload"]
+
+const FILE_SUPPORTED_FORMATS = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+];
+
+const renderStep = (step) => {
+  switch (step) {
+    case 0:
+      return
+    default:
+      return null;
+  }
+}
+
+
+const FILE_SIZE = 160 * 102400000;
+
+const validationSchema = object({
+  select: string().ensure().required("Select is required"),
+  title: string().required("Title is required").max(255, "Maxim"),
+  abstract: string().required("Area is required"),
+  authors: array().required("This field is required"),
+  file: mixed().test(
+    "fileSize",
+    "File is too large",
+    value => !value || (value && value.size <= FILE_SIZE)
+  )
+    .test(
+      "fileFormat",
+      "Unsupported Format",
+      value => !value || (value => value && FILE_SUPPORTED_FORMATS.includes(value.type))
+    )
+});
+
+
 const FormComponent = () => {
+  const [activeStep, setActiveStep] = useState(0);
+
   return (
     <Card sx={{ minWidth: 700, minHeight: 700 }}>
       <CardContent sx={{ paddingY: 4, paddingX: 5 }}>
@@ -26,76 +65,27 @@ const FormComponent = () => {
             select: 'article',
             title: '',
             abstract: '',
-            authors: ['Alex', 'Cristi']
+            authors: ['Alex', 'Cristi'],
+            file: ''
           }}
+          validationSchema={validationSchema}
           enableReinitialize={true}
-          onSubmit={values => {
-            setTimeout(() => {
-              console.log(JSON.stringify(values, null, 2));
-            }, 100)
-          }}
+          onSubmit={
+            values => {
+              alert(JSON.stringify(values, null, 2));
+            }}
         >
-          {(formikProps) => {
-            const { values } = formikProps;
-            return (
-              <FormStepper>
-                <Grid container spacing={2}>
-                  <Grid item md={6}>
-                    <SelectComp options={options} name="select" label="Select type" id="Type" />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2}>
-                  <Grid item md={6}>
-                    <Input
-                      name="title"
-                      label="title"
-                      id="title"
-                    />
-                  </Grid>
-                  <Grid item md={6}>
-                    <Textarea
-                      label="Abstract"
-                      name="abstract"
-                      rows="6"
-                      placeholder=""
-                    />
-                  </Grid>
-                  <Grid item md={6}>
-                    <FieldArray
-                      name="authors"
-                      render={helper => (
-                        <div>
-                          {values.authors && values.authors.length > 0 ? (
-                            values.authors.map((author, i) => (
-                              <div key={i}>
-                                <Field name={`authors.${i}`} />
-                                <button type="button"
-                                  onClick={() => helper.remove(i)}>
-                                  Remove
-                                </button>
-                                <button type="button"
-                                  onClick={() => helper.push('alex')}>
-                                  Add
-                                </button>
-                              </div>
-                            ))
-                          ) : null}
-                        </div>
-                      )}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2}>
-                  <Grid item md={6}>
-                    <FileUpload type='file' name='file' label="File Upload" />
-                  </Grid>
-                  <Grid item md={6}>
-                    <Button type="submit" variant='secondary'>Submit</Button>
-                  </Grid>
-                </Grid>
-              </FormStepper>
-            )
-          }}
+          {({ values }) => (
+            <Stepper activeStep={activeStep}>
+              {steps.map(label => {
+                <Step key={label}>
+                  <StepLabel>
+                    {label}
+                  </StepLabel>
+                </Step>
+              })}
+            </Stepper>
+          )}
         </Formik>
       </CardContent>
     </Card >

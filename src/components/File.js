@@ -1,15 +1,23 @@
 import React from 'react';
-import { useField } from 'formik';
+import { useField, Field } from 'formik';
 
-const FileUpload = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
+const FileUpload = ({
+  field,
+  form: { touched, errors },
+  name,
+  label,
+  isError,
+  ...props
+}) => {
   return (
     <>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <input className='text-input' {...field} {...props} />
-      {meta.touched && meta.error ? (
-        <div className='error'>{meta.error}</div>
-      ) : null}
+      <Field
+        variant="outlined"
+        name="file"
+        title={label}
+        type={"file"}
+        {...props}
+      />
     </>
   )
 }

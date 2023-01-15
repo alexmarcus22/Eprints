@@ -1,6 +1,8 @@
-import Select from "react-select";
 import React from 'react';
 import { useField } from 'formik';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
 
 const SelectComp = ({
   label,
@@ -12,16 +14,20 @@ const SelectComp = ({
   const { setValue } = helpers;
 
   return (
-    <>
-      <label htmlFor={props.id || props.name}>{label}</label>
+    <FormControl>
       <Select
-        options={options}
+        defaultValue="article"
         name={field.name}
         onChange={(option) => setValue(option.value)}
-        instanceId={props.id}
-        menuPosition="fixed"
-      />
-    </>
+      >
+        {options && options.map((option, index) => (
+          <Option value={option.value} key={index}>{option.label}</Option>
+        ))}
+      </Select>
+      {meta.touched && meta.error ? (
+        <div className='error'>{meta.error}</div>
+      ) : null}
+    </FormControl>
   )
 }
 
